@@ -1,0 +1,34 @@
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = 'org.benignbala.testlink.Main'
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+      compile 'org.codehaus.groovy:groovy:2.4.3'
+      compile group: 'br.eti.kinoshita', name: 'testlink-java-api', version: '1.9.8-1'
+      compile 'org.yaml:snakeyaml:1.15'
+      compile 'commons-cli:commons-cli:1.3'
+}
+
+jar {
+    version = '0.1-alpha'
+    from {
+
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+        attributes (
+            'Main-Class': 'org.benignbala.testlink.Main',
+            'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        )
+    }
+}
